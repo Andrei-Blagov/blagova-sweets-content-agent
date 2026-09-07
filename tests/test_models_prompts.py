@@ -69,9 +69,10 @@ def test_user_prompt_contains_params() -> None:
     assert "product" in prompt
     assert "500" in prompt
     assert "Булочки с корицей" in prompt
-    assert "CTA" in prompt or "призыв" in prompt.lower() or "Напишите нам" in prompt
+    assert "CTA" in prompt or "призыв" in prompt.lower() or "engagement" in prompt.lower()
     assert "хэштег" in prompt.lower()
-
+    assert "FACTS_FROM_SOURCE" in prompt
+    assert "Приходите" in prompt or "engagement" in prompt.lower()
 
 class _FakeOpenAI:
     def __init__(self, text: str) -> None:

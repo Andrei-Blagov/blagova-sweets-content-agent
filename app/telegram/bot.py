@@ -17,6 +17,15 @@ logger = logging.getLogger(__name__)
 STYLE_BUTTONS = list(KNOWN_STYLES)
 MAX_USER_INPUT_CHARS = 6000
 
+# Defaults for Telegram → ContentAgent (shared prompts, no Telegram-specific LLM prompt).
+TELEGRAM_GENERATE_DEFAULTS: dict[str, object] = {
+    "platform": "telegram",
+    "goal": "product",
+    "max_length": 800,
+    "cta": False,
+    "hashtags": False,
+}
+
 
 @dataclass
 class DialogState:
@@ -62,15 +71,15 @@ async def run_bot(settings: Settings | None = None) -> None:
     runtime = BotRuntime(agent=ContentAgent(settings=settings))
 
     async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-        assert update.effective_chat
+        assert update.effective_chat and update.message
         text = (
-            "Привет! Я *BLAGOVA_SWEETS Content Agent*.\n\n"
-            "Помогу быстро собрать пост для соцсетей пекарни BLAGOVA_SWEETS.\n\n"
+            "Привет! Я <b>BLAGOVA_SWEETS Content Agent</b>.\n\n"
+            "Помогу быстро собрать пост для соцсетей бренда BLAGOVA_SWEETS.\n\n"
             "Команды:\n"
             "/post — сгенерировать пост\n"
             "/cancel — отменить текущий диалог"
         )
-        await update.message.reply_text(text, parse_mode="Markdown")
+        await update.message.reply_text(text, parse_mode="HTML")
 
     async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         assert update.effective_chat
@@ -144,12 +153,8 @@ async def run_bot(settings: Settings | None = None) -> None:
                 runtime.agent.generate_post,
                 url=state.content if state.content_type == "url" else None,
                 text=state.content if state.content_type == "text" else None,
-                platform="telegram",
                 style=style,
-                goal="product",
-                max_length=800,
-                cta=False,
-                hashtags=False,
+                **TELEGRAM_GENERATE_DEFAULTS,
             )
         except AppError as exc:
             await context.bot.send_message(chat_id=chat_id, text=f"Ошибка: {exc.message}")
