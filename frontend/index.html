@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BLAGOVA_SWEETS Content Agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+  <div class="bg-glow" aria-hidden="true"></div>
+  <div class="page">
+    <header class="hero">
+      <p class="eyebrow">BLAGOVA_SWEETS</p>
+      <h1>BLAGOVA_SWEETS Content Agent</h1>
+      <p class="subtitle">AI-генератор постов для BLAGOVA_SWEETS</p>
+    </header>
+
+    <main class="layout">
+      <section class="panel form-panel" aria-labelledby="form-title">
+        <h2 id="form-title" class="sr-only">Параметры генерации</h2>
+
+        <div class="source-toggle" role="tablist" aria-label="Источник">
+          <button type="button" class="toggle-btn active" data-source="url" role="tab" aria-selected="true">URL</button>
+          <button type="button" class="toggle-btn" data-source="text" role="tab" aria-selected="false">Текст</button>
+        </div>
+
+        <label class="field" id="url-field">
+          <span>URL страницы</span>
+          <input id="url" type="url" placeholder="https://example.com/product" autocomplete="off" />
+        </label>
+
+        <label class="field hidden" id="text-field">
+          <span>Текст</span>
+          <textarea id="text" rows="7" placeholder="Опишите продукт, новинку или новость пекарни…"></textarea>
+        </label>
+
+        <div class="grid-3">
+          <label class="field">
+            <span>Площадка</span>
+            <select id="platform">
+              <option value="telegram" selected>Telegram</option>
+              <option value="vk">VK</option>
+              <option value="instagram">Instagram</option>
+              <option value="universal">Universal</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Стиль</span>
+            <select id="style">
+              <option value="friendly" selected>friendly</option>
+              <option value="ironic">ironic</option>
+              <option value="selling">selling</option>
+              <option value="expert">expert</option>
+              <option value="warm">warm</option>
+              <option value="premium">premium</option>
+              <option value="short">short</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Цель</span>
+            <select id="goal">
+              <option value="product" selected>product</option>
+              <option value="sales">sales</option>
+              <option value="new_product">new_product</option>
+              <option value="informational">informational</option>
+              <option value="promo">promo</option>
+              <option value="holiday">holiday</option>
+              <option value="engagement">engagement</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Максимальная длина</span>
+          <input id="max_length" type="number" min="50" max="4000" value="800" />
+        </label>
+
+        <div class="checks">
+          <label class="check"><input id="cta" type="checkbox" /> Добавить CTA</label>
+          <label class="check"><input id="hashtags" type="checkbox" /> Добавить хэштеги</label>
+        </div>
+
+        <button id="generate" type="button" class="primary-btn">Сгенерировать пост</button>
+        <p id="error" class="error hidden" role="alert"></p>
+      </section>
+
+      <section class="panel result-panel" aria-live="polite">
+        <div class="result-head">
+          <h2>Готовый пост</h2>
+          <span id="length" class="meta">0 символов</span>
+        </div>
+
+        <div id="loader" class="loader hidden">
+          <div class="spinner" aria-hidden="true"></div>
+          <p>Готовим текст…</p>
+        </div>
+
+        <pre id="post" class="post-box">Здесь появится готовый пост для публикации.</pre>
+        <button id="copy" type="button" class="secondary-btn" disabled>Копировать</button>
+      </section>
+    </main>
+
+    <section class="panel history-panel">
+      <button type="button" id="history-toggle" class="history-toggle" aria-expanded="false">
+        Последние генерации
+        <span class="chevron">▾</span>
+      </button>
+      <div id="history-body" class="history-body hidden">
+        <ul id="history-list" class="history-list"></ul>
+        <p id="history-empty" class="muted">История пока пуста.</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>BLAGOVA_SWEETS Content Agent</span>
+      <a href="/docs" target="_blank" rel="noopener">API Docs</a>
+    </footer>
+  </div>
+
+  <script src="/assets/app.js"></script>
+</body>
+</html>
