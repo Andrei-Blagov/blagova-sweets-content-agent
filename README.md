@@ -235,12 +235,32 @@ docker compose up -d --build
 
 ### Обновление контейнера на VPS
 
+Вручную:
+
 ```bash
+cd /opt/projects/blagova-sweets-content-agent
 git pull
 docker compose up -d --build
 docker compose ps
 docker compose logs -f api
 ```
+
+Автоматически (каждый час через cron):
+
+```bash
+# скрипт в репозитории
+scripts/update.sh
+
+# cron (пример)
+15 * * * * /opt/projects/blagova-sweets-content-agent/scripts/update.sh
+```
+
+Скрипт:
+- делает `git fetch` / `git pull --ff-only` только при новых коммитах;
+- пересобирает контейнеры через `docker compose up -d --build`;
+- пишет лог в `/home/andrei/logs/blagova-sweets-content-agent-update.log`;
+- не запускает параллельно (flock);
+- если `.env` ещё нет — пропускает обновление (ожидает первичный деплой).
 
 ### Production-заметки
 
