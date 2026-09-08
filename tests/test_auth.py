@@ -161,11 +161,20 @@ def test_admin_history_full(tmp_path, monkeypatch) -> None:
     get_settings.cache_clear()
 
 
-def test_guest_docs_forbidden(tmp_path, monkeypatch) -> None:
+def test_unauthenticated_docs_denied(tmp_path, monkeypatch) -> None:
+    client = _build_client(tmp_path, monkeypatch)
+    assert client.get("/docs").status_code == 401
+    assert client.get("/openapi.json").status_code == 401
+    assert client.get("/redoc").status_code == 401
+    get_settings.cache_clear()
+
+
+def test_guest_docs_allowed(tmp_path, monkeypatch) -> None:
     client = _build_client(tmp_path, monkeypatch)
     assert _login(client, "guest", GUEST_PW).status_code == 200
-    assert client.get("/docs").status_code == 403
-    assert client.get("/openapi.json").status_code == 403
+    assert client.get("/docs").status_code == 200
+    assert client.get("/openapi.json").status_code == 200
+    assert client.get("/redoc").status_code == 200
     get_settings.cache_clear()
 
 
@@ -174,6 +183,28 @@ def test_admin_docs_allowed(tmp_path, monkeypatch) -> None:
     assert _login(client, "admin", ADMIN_PW).status_code == 200
     assert client.get("/docs").status_code == 200
     assert client.get("/openapi.json").status_code == 200
+    assert client.get("/redoc").status_code == 200
+    get_settings.cache_clear()
+
+
+def test_guest_admin_only_endpoint_403(tmp_path, monkeypatch) -> None:
+    from fastapi import Depends
+
+    from app.auth.deps import require_admin
+    from app.auth.models import AuthUser
+
+    client = _build_client(tmp_path, monkeypatch)
+
+    @client.app.get("/__test_admin_only", include_in_schema=False)
+    def _admin_only(_: AuthUser = Depends(require_admin)) -> dict[str, bool]:
+        return {"ok": True}
+
+    assert _login(client, "guest", GUEST_PW).status_code == 200
+    assert client.get("/__test_admin_only").status_code == 403
+
+    client.post("/auth/logout")
+    assert _login(client, "admin", ADMIN_PW).status_code == 200
+    assert client.get("/__test_admin_only").status_code == 200
     get_settings.cache_clear()
 
 

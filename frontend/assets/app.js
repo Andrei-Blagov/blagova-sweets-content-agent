@@ -123,6 +123,7 @@
     appShell.classList.add("is-locked");
     appShell.classList.remove("is-ready", "is-unlocking");
     appShell.setAttribute("aria-hidden", "true");
+    docsLink.classList.add("hidden");
     authOverlay.classList.remove("is-hidden", "is-leaving");
     if (message) showLoginError(message);
     setTimeout(() => loginPassword.focus(), 50);
@@ -132,20 +133,20 @@
     state.authenticated = true;
     state.userRole = me.role;
     roleBadge.textContent = me.role === "admin" ? "ADMIN" : "GOST";
-    docsLink.classList.toggle("hidden", me.role !== "admin");
+    docsLink.classList.remove("hidden");
     historyPanel.classList.toggle("hidden", false);
 
     if (animate) {
       authOverlay.classList.add("is-leaving");
       appShell.classList.remove("is-locked");
       appShell.classList.add("is-unlocking");
-      setTimeout(() => {
+      window.setTimeout(() => {
         authOverlay.classList.add("is-hidden");
         authOverlay.classList.remove("is-leaving");
         appShell.classList.remove("is-unlocking");
         appShell.classList.add("is-ready");
         appShell.setAttribute("aria-hidden", "false");
-      }, 1300);
+      }, 1500);
     } else {
       authOverlay.classList.add("is-hidden");
       appShell.classList.remove("is-locked");

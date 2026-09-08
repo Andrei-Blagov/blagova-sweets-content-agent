@@ -11,7 +11,7 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from app.auth.deps import get_current_user, require_admin, require_auth
+from app.auth.deps import get_current_user, require_auth
 from app.auth.models import AuthUser, LoginRequest, MeResponse, Role
 from app.auth.service import COOKIE_NAME, AuthService
 from app.content_agent import ContentAgent
@@ -175,15 +175,15 @@ def create_app() -> FastAPI:
         return {"status": "ok"}
 
     @app.get("/docs", include_in_schema=False)
-    def swagger_docs(_: AuthUser = Depends(require_admin)):
+    def swagger_docs(_: AuthUser = Depends(require_auth)):
         return get_swagger_ui_html(openapi_url="/openapi.json", title=app.title)
 
     @app.get("/redoc", include_in_schema=False)
-    def redoc_docs(_: AuthUser = Depends(require_admin)):
+    def redoc_docs(_: AuthUser = Depends(require_auth)):
         return get_redoc_html(openapi_url="/openapi.json", title=app.title)
 
     @app.get("/openapi.json", include_in_schema=False)
-    def openapi_json(_: AuthUser = Depends(require_admin)):
+    def openapi_json(_: AuthUser = Depends(require_auth)):
         return JSONResponse(
             get_openapi(
                 title=app.title,
