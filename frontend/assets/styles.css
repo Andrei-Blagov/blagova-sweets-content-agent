@@ -116,30 +116,10 @@ body {
   display: block;
 }
 
-.logo-frame {
-  display: inline-grid;
-  place-items: center;
-  background: #050505;
-  border-radius: 22px;
-  line-height: 0;
-  box-shadow: 0 12px 28px rgba(28, 12, 40, 0.16);
-}
-
-.logo-frame-mini {
-  padding: 0.2rem 0.3rem 0.1rem;
-  border-radius: 14px;
-  flex-shrink: 0;
-}
-
-.logo-hero-frame {
-  margin: 0 auto;
-  padding: 0.35rem 0.55rem 0.15rem;
-  border-radius: 26px;
-}
-
 .logo-mini {
   width: 72px;
   height: auto;
+  flex-shrink: 0;
 }
 
 .brand-inline h1 {
@@ -488,19 +468,15 @@ input:focus, textarea:focus, select:focus, button:focus-visible {
   animation: none;
 }
 
-.auth-overlay.is-leaving .login-card > :not(.logo-hero-frame) {
+.auth-overlay.is-leaving .login-card > :not(.logo-hero) {
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
 }
 
-.auth-overlay.is-leaving .logo-hero-frame {
+.auth-overlay.is-leaving .logo-hero {
   animation: logo-rush 1.5s cubic-bezier(0.16, 0.75, 0.2, 1) forwards;
   z-index: 2;
-}
-
-.auth-overlay.is-leaving .logo-hero {
-  animation: none;
 }
 
 .login-card h2 {
