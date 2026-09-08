@@ -44,6 +44,8 @@ services:
     depends_on:
       api:
         condition: service_healthy
+    healthcheck:
+      disable: true
 
 volumes:
   blagova_sweets_data:
