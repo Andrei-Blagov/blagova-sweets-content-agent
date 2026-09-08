@@ -110,6 +110,13 @@ body {
 
 .logo-mini, .logo-hero {
   animation: breathe 4.5s ease-in-out infinite;
+  object-fit: contain;
+  background: transparent;
+}
+
+.logo-mini {
+  width: 64px;
+  height: auto;
 }
 
 .brand-inline h1 {
@@ -463,7 +470,7 @@ input:focus, textarea:focus, select:focus, button:focus-visible {
 .logo-hero {
   display: block;
   margin: 0 auto;
-  width: 110px;
+  width: 160px;
   height: auto;
 }
 
