@@ -154,6 +154,7 @@ async def run_bot(settings: Settings | None = None) -> None:
                 url=state.content if state.content_type == "url" else None,
                 text=state.content if state.content_type == "text" else None,
                 style=style,
+                created_by_role="telegram",
                 **TELEGRAM_GENERATE_DEFAULTS,
             )
         except AppError as exc:

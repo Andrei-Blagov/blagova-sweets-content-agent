@@ -98,6 +98,8 @@ class HistoryItem(BaseModel):
     goal: str
     post: str
     length: int
+    session_id: str | None = None
+    created_by_role: str | None = None
 
 
 class PageContent(BaseModel):

@@ -70,9 +70,20 @@ log "Rebuilding and restarting containers..."
 APP_PORT="$(grep -E '^APP_PORT=' .env 2>/dev/null | cut -d= -f2- | tr -d '[:space:]' || true)"
 APP_PORT="${APP_PORT:-8090}"
 if command -v curl >/dev/null 2>&1; then
+  HEALTH_URLS=(
+    "https://content.blagovasweets.com/health"
+    "http://127.0.0.1:${APP_PORT}/health"
+  )
   for _ in 1 2 3 4 5 6; do
-    if curl -fsS "http://127.0.0.1:${APP_PORT}/health" >/dev/null 2>&1; then
-      log "Health OK on :${APP_PORT}"
+    ok=0
+    for url in "${HEALTH_URLS[@]}"; do
+      if curl -fsS "$url" >/dev/null 2>&1; then
+        log "Health OK via $url"
+        ok=1
+        break
+      fi
+    done
+    if [[ "$ok" -eq 1 ]]; then
       break
     fi
     sleep 5

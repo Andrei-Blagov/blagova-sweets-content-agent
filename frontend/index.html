@@ -9,13 +9,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/styles.css" />
 </head>
-<body>
-  <div class="bg-glow" aria-hidden="true"></div>
-  <div class="page">
-    <header class="hero">
-      <p class="eyebrow">BLAGOVA_SWEETS</p>
-      <h1>BLAGOVA_SWEETS Content Agent</h1>
-      <p class="subtitle">AI-генератор постов для BLAGOVA_SWEETS</p>
+<body class="boot-locked">
+  <div class="bg-blobs" aria-hidden="true">
+    <span class="blob blob-a"></span>
+    <span class="blob blob-b"></span>
+    <span class="blob blob-c"></span>
+  </div>
+
+  <div id="app-shell" class="page app-shell is-locked" aria-hidden="true">
+    <header class="topbar">
+      <div class="brand-inline">
+        <img class="logo-mini" src="/assets/blagova_sweets_logo.png" alt="BLAGOVA_SWEETS" width="48" height="48" />
+        <div>
+          <h1>BLAGOVA_SWEETS Content Agent</h1>
+          <p class="subtitle">AI-генератор постов для BLAGOVA_SWEETS</p>
+        </div>
+      </div>
+      <div class="session-box">
+        <span id="role-badge" class="role-badge">ADMIN</span>
+        <button id="logout" type="button" class="secondary-btn compact">Выйти</button>
+      </div>
     </header>
 
     <main class="layout">
@@ -96,7 +109,7 @@
         </div>
 
         <div id="loader" class="loader hidden">
-          <div class="spinner" aria-hidden="true"></div>
+          <div class="brand-dots" aria-hidden="true"><span></span><span></span><span></span></div>
           <p>Готовим текст…</p>
         </div>
 
@@ -105,7 +118,7 @@
       </section>
     </main>
 
-    <section class="panel history-panel">
+    <section id="history-panel" class="panel history-panel">
       <button type="button" id="history-toggle" class="history-toggle" aria-expanded="false">
         Последние генерации
         <span class="chevron">▾</span>
@@ -118,8 +131,32 @@
 
     <footer class="footer">
       <span>BLAGOVA_SWEETS Content Agent</span>
-      <a href="/docs" target="_blank" rel="noopener">API Docs</a>
+      <a id="docs-link" class="hidden" href="/docs" target="_blank" rel="noopener">API Docs</a>
     </footer>
+  </div>
+
+  <div id="auth-overlay" class="auth-overlay" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <div class="login-card">
+      <img class="logo-hero" src="/assets/blagova_sweets_logo.png" alt="BLAGOVA_SWEETS" width="120" height="120" />
+      <h2 id="login-title">BLAGOVA_SWEETS Content Agent</h2>
+      <p class="login-sub">AI Content Workspace</p>
+
+      <div class="role-toggle" role="tablist" aria-label="Роль входа">
+        <button type="button" class="role-btn active" data-role="admin" aria-selected="true">Администратор</button>
+        <button type="button" id="guest-role-btn" class="role-btn" data-role="guest" aria-selected="false">Гостевой доступ</button>
+      </div>
+
+      <label class="field">
+        <span>Пароль</span>
+        <div class="password-wrap">
+          <input id="login-password" type="password" autocomplete="current-password" />
+          <button type="button" id="toggle-password" class="ghost-btn" aria-label="Показать пароль">👁</button>
+        </div>
+      </label>
+
+      <p id="login-error" class="error hidden" role="alert"></p>
+      <button id="login-submit" type="button" class="primary-btn">Войти</button>
+    </div>
   </div>
 
   <script src="/assets/app.js"></script>

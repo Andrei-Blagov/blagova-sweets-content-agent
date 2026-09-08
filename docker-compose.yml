@@ -3,16 +3,22 @@ services:
     build: .
     container_name: blagova-sweets-content-agent
     restart: unless-stopped
+    # Bind only to localhost so public access goes through Caddy HTTPS.
     ports:
-      - "${APP_PORT:-8090}:${APP_PORT:-8090}"
+      - "127.0.0.1:${APP_PORT:-8090}:${APP_PORT:-8090}"
     env_file:
       - .env
     environment:
       APP_HOST: "0.0.0.0"
       APP_PORT: "${APP_PORT:-8090}"
       DB_PATH: "/app/data/history.db"
+      APP_ENV: "production"
+      COOKIE_SECURE: "true"
     volumes:
       - blagova_sweets_data:/app/data
+    networks:
+      - default
+      - n8n_proxy
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1:${APP_PORT:-8090}/health"]
       interval: 30s
@@ -30,6 +36,8 @@ services:
       DB_PATH: "/app/data/history.db"
     volumes:
       - blagova_sweets_data:/app/data
+    networks:
+      - default
     command: ["python", "-m", "app.telegram.bot"]
     profiles:
       - bot
@@ -39,3 +47,8 @@ services:
 
 volumes:
   blagova_sweets_data:
+
+networks:
+  n8n_proxy:
+    external: true
+    name: n8n_n8n_net

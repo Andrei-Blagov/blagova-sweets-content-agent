@@ -41,6 +41,8 @@ class ContentAgent:
         max_length: int = 800,
         cta: bool = False,
         hashtags: bool = False,
+        session_id: str | None = None,
+        created_by_role: str | None = None,
     ) -> GenerateResponse:
         try:
             platform_value = Platform(platform)
@@ -61,9 +63,19 @@ class ContentAgent:
             cta=cta,
             hashtags=hashtags,
         )
-        return self.generate(request)
+        return self.generate(
+            request,
+            session_id=session_id,
+            created_by_role=created_by_role,
+        )
 
-    def generate(self, request: GenerateRequest) -> GenerateResponse:
+    def generate(
+        self,
+        request: GenerateRequest,
+        *,
+        session_id: str | None = None,
+        created_by_role: str | None = None,
+    ) -> GenerateResponse:
         logger.info(
             "Generate request platform=%s style=%s goal=%s source=%s",
             request.platform.value,
@@ -111,6 +123,8 @@ class ContentAgent:
                     goal=response.goal,
                     post=response.post,
                     length=response.length,
+                    session_id=session_id,
+                    created_by_role=created_by_role or "system",
                 )
             except Exception:  # noqa: BLE001
                 logger.exception("Failed to persist history")

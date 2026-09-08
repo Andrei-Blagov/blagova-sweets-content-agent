@@ -7,3 +7,5 @@ pydantic>=2.7.0,<3.0.0
 python-dotenv>=1.0.0,<2.0.0
 python-telegram-bot>=21.0,<22.0
 pytest>=8.0.0,<9.0.0
+argon2-cffi>=23.1.0,<26.0.0
+itsdangerous>=2.1.0,<3.0.0
