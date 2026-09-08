@@ -11,7 +11,8 @@ from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from app.auth.models import AuthUser, Role
 from app.auth.passwords import verify_password
 from app.auth.rate_limit import LoginRateLimiter
-from app.config import Settings
+from app.config import DEV_INSECURE_SESSION_SECRET, Settings
+from app.errors import ConfigError
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +26,20 @@ ROLE_USERNAMES = {
 class AuthService:
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
+        secret = settings.session_secret
+        if not secret:
+            if settings.app_env == "production":
+                raise ConfigError(
+                    "SESSION_SECRET обязателен при APP_ENV=production. "
+                    "Задайте надёжный секрет в .env на сервере."
+                )
+            secret = DEV_INSECURE_SESSION_SECRET
+        elif settings.app_env == "production" and secret == DEV_INSECURE_SESSION_SECRET:
+            raise ConfigError(
+                "SESSION_SECRET не может быть dev-insecure-session-secret при APP_ENV=production."
+            )
         self._serializer = URLSafeTimedSerializer(
-            secret_key=settings.session_secret or "dev-insecure-session-secret",
+            secret_key=secret,
             salt="blagova-sweets-session",
         )
         self.rate_limiter = LoginRateLimiter(max_attempts=5, window_seconds=600)

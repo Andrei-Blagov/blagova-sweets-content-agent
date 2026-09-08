@@ -9,9 +9,12 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from app.errors import ConfigError
+
 ROOT_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT_DIR / "data"
 DEFAULT_DB_PATH = DATA_DIR / "history.db"
+DEV_INSECURE_SESSION_SECRET = "dev-insecure-session-secret"
 
 load_dotenv(ROOT_DIR / ".env")
 
@@ -21,6 +24,20 @@ def _env_bool(name: str, default: bool = False) -> bool:
     if raw is None:
         return default
     return raw.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _validate_session_secret(*, app_env: str, session_secret: str) -> None:
+    if app_env != "production":
+        return
+    if not session_secret:
+        raise ConfigError(
+            "SESSION_SECRET обязателен при APP_ENV=production. "
+            "Задайте надёжный секрет в .env на сервере."
+        )
+    if session_secret == DEV_INSECURE_SESSION_SECRET:
+        raise ConfigError(
+            "SESSION_SECRET не может быть dev-insecure-session-secret при APP_ENV=production."
+        )
 
 
 @dataclass(frozen=True)
@@ -53,6 +70,8 @@ class Settings:
 def get_settings() -> Settings:
     app_env = os.getenv("APP_ENV", "development").strip().lower() or "development"
     cookie_secure_default = app_env == "production"
+    session_secret = os.getenv("SESSION_SECRET", "").strip()
+    _validate_session_secret(app_env=app_env, session_secret=session_secret)
     return Settings(
         openai_api_key=os.getenv("OPENAI_API_KEY", "").strip(),
         openai_base_url=os.getenv("BASE_URL", "https://api.openai.com/v1").strip().rstrip("/"),
@@ -65,7 +84,7 @@ def get_settings() -> Settings:
         db_path=Path(os.getenv("DB_PATH", str(DEFAULT_DB_PATH))),
         admin_password_hash=os.getenv("ADMIN_PASSWORD_HASH", "").strip(),
         guest_password_hash=os.getenv("GUEST_PASSWORD_HASH", "").strip(),
-        session_secret=os.getenv("SESSION_SECRET", "").strip(),
+        session_secret=session_secret,
         guest_enabled=_env_bool("GUEST_ENABLED", True),
         admin_session_ttl_minutes=int(os.getenv("ADMIN_SESSION_TTL_MINUTES", "720")),
         guest_session_ttl_minutes=int(os.getenv("GUEST_SESSION_TTL_MINUTES", "240")),
