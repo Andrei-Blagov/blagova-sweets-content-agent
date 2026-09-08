@@ -84,15 +84,15 @@ body {
 }
 
 .app-shell.is-unlocking {
-  animation: unlock-shell 0.6s ease forwards;
+  animation: unlock-shell 1.25s cubic-bezier(0.22, 0.7, 0.2, 1) forwards;
 }
 
 .app-shell.is-ready .panel {
-  animation: rise 0.55s ease both;
+  animation: rise 0.7s ease both;
 }
 
-.app-shell.is-ready .result-panel { animation-delay: 0.06s; }
-.app-shell.is-ready .history-panel { animation-delay: 0.12s; }
+.app-shell.is-ready .result-panel { animation-delay: 0.08s; }
+.app-shell.is-ready .history-panel { animation-delay: 0.16s; }
 
 .topbar {
   display: flex;
@@ -431,13 +431,12 @@ input:focus, textarea:focus, select:focus, button:focus-visible {
   padding: 1rem;
   background: rgba(28, 16, 36, 0.28);
   backdrop-filter: blur(10px);
-  transition: opacity 0.55s ease, backdrop-filter 0.55s ease, visibility 0.55s ease;
+  transition: background 1.25s ease, backdrop-filter 1.25s ease, visibility 1.25s ease;
 }
 
 .auth-overlay.is-leaving {
-  opacity: 0;
+  background: rgba(28, 16, 36, 0);
   backdrop-filter: blur(0);
-  visibility: hidden;
   pointer-events: none;
 }
 
@@ -455,10 +454,26 @@ input:focus, textarea:focus, select:focus, button:focus-visible {
   padding: 1.5rem 1.35rem 1.4rem;
   text-align: center;
   animation: card-in 0.45s ease;
+  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
 .auth-overlay.is-leaving .login-card {
-  animation: card-out 0.5s ease forwards;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  animation: none;
+}
+
+.auth-overlay.is-leaving .login-card > :not(.logo-hero) {
+  opacity: 0;
+  transition: opacity 0.28s ease;
+  pointer-events: none;
+}
+
+.auth-overlay.is-leaving .logo-hero {
+  animation: logo-rush 1.25s cubic-bezier(0.16, 0.75, 0.2, 1) forwards;
+  z-index: 2;
 }
 
 .login-card h2 {
@@ -520,18 +535,30 @@ input:focus, textarea:focus, select:focus, button:focus-visible {
 }
 
 @keyframes unlock-shell {
-  from { filter: blur(8px); opacity: 0.55; transform: scale(0.985); }
+  from { filter: blur(10px); opacity: 0.35; transform: scale(0.97); }
   to { filter: blur(0); opacity: 1; transform: scale(1); }
+}
+
+@keyframes logo-rush {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+  55% {
+    opacity: 0.9;
+    filter: blur(1px);
+  }
+  100% {
+    transform: translateY(8vh) scale(3.6);
+    opacity: 0;
+    filter: blur(8px);
+  }
 }
 
 @keyframes card-in {
   from { opacity: 0; transform: translateY(12px) scale(0.96); }
   to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes card-out {
-  from { opacity: 1; transform: scale(1); }
-  to { opacity: 0; transform: scale(0.94); }
 }
 
 @keyframes shake {

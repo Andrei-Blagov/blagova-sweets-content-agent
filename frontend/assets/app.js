@@ -145,7 +145,7 @@
         appShell.classList.remove("is-unlocking");
         appShell.classList.add("is-ready");
         appShell.setAttribute("aria-hidden", "false");
-      }, 560);
+      }, 1300);
     } else {
       authOverlay.classList.add("is-hidden");
       appShell.classList.remove("is-locked");
